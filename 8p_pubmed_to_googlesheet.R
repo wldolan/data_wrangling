@@ -2,7 +2,6 @@ library("easyPubMed")
 library(tidyverse)
 library(readxl)
 library(googlesheets4)
-library(cronR)
 
 ### googlsheets authentication
 gs4_auth(
@@ -74,7 +73,7 @@ input_file <- read_xlsx("~/Documents/Perlara/8P/8p Gene Information w_ Phenotype
 
 ### search and compile complete results
 genelist <- as.list(input_file$gene)
-genelist[39] <- "HR gene" 
+genelist[39] <- "HR gene"
 
 datalist <- list()
 n <- 0
@@ -82,7 +81,7 @@ system.time(
   for (g in 1:length(genelist)){
     gene <- genelist[g]
     query_part1 <- paste0("(\"", last_run,"\"[Date - Publication] : \"3000\"[Date - Publication]) AND (gene[TIAB] AND (cognitive[TIAB] OR neuro[TIAB] OR pathogenesis[TIAB] OR disease[TIAB] OR cardio[TIAB] OR development[TIAB] OR therapeutic[TIAB])") 
-    query_part2 <- paste0(" AND ", gene, ")")
+    query_part2 <- paste0(" AND \"", gene, "\")")
     gene_query <- paste(query_part1, query_part2, sep = " ") 
     
     my_query <- get_pubmed_ids(gene_query)
@@ -105,7 +104,7 @@ system.time(
     ))
     
     df$gene <- as.character(gene)
-    df$query <- as.character(query)
+    df$query <- as.character(gene_query)
 
     n <- n+1
     datalist[[n]] <- df

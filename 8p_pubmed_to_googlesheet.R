@@ -85,39 +85,33 @@ system.time(
     query_part2 <- paste0(" AND ", gene, ")")
     gene_query <- paste(query_part1, query_part2, sep = " ") 
     
-    querylist <- list(gene_query)
+    my_query <- get_pubmed_ids(gene_query)
     
-    for (i in 1:length(querylist)){
-      
-      query <- querylist[i]
-      my_query <- get_pubmed_ids(query)
-      
-      if (my_query$Count == "0") {
-        next
-      }
-      
-      # Fetch data
-      my_abstracts_xml <- fetch_pubmed_data(my_query, retmax = 5000)
-      
-      # Store Pubmed Records as elements of a list
-      all_xml <- articles_to_list(my_abstracts_xml)
-      
-      # Perform operation (use lapply here, no further parameters)
-      df <- do.call(rbind, lapply(all_xml, article_to_df,
-                                  max_chars = -1,
-                                  getAuthors = TRUE,
-                                  getKeywords = TRUE
-      ))
-      
-      df$gene <- as.character(gene)
-      df$query <- as.character(query)
-
-      n <- n+1
-      datalist[[n]] <- df
-      
-      print(paste('gene', g, 'query', i))
-      
+    if (my_query$Count == "0") {
+      next
     }
+    
+    # Fetch data
+    my_abstracts_xml <- fetch_pubmed_data(my_query, retmax = 5000)
+    
+    # Store Pubmed Records as elements of a list
+    all_xml <- articles_to_list(my_abstracts_xml)
+    
+    # Perform operation (use lapply here, no further parameters)
+    df <- do.call(rbind, lapply(all_xml, article_to_df,
+                                max_chars = -1,
+                                getAuthors = TRUE,
+                                getKeywords = TRUE
+    ))
+    
+    df$gene <- as.character(gene)
+    df$query <- as.character(query)
+
+    n <- n+1
+    datalist[[n]] <- df
+    
+    print(paste('gene', g, gene))
+      
   }
 )
 

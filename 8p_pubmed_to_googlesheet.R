@@ -81,7 +81,7 @@ system.time(
   for (g in 1:length(genelist)){
     gene <- genelist[g]
     query_part1 <- paste0("(\"", last_run,"\"[Date - Publication] : \"3000\"[Date - Publication]) AND (gene[TIAB] AND (cognitive[TIAB] OR neuro[TIAB] OR pathogenesis[TIAB] OR disease[TIAB] OR cardio[TIAB] OR development[TIAB] OR therapeutic[TIAB])") 
-    query_part2 <- paste0(" AND \"", gene, "\")")
+    query_part2 <- paste0(" AND \"", gene, "\"[TIAB])")
     gene_query <- paste(query_part1, query_part2, sep = " ") 
     
     my_query <- get_pubmed_ids(gene_query)
